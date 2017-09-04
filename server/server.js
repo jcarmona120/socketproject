@@ -16,35 +16,32 @@ app.use(express.static(publicPath));
 
 
 io.on('connection', (socket) => {
-	console.log('new user connected');
+  console.log('New user connected');
 
-	//socket.emit from admin text 'Welcome to Chat App'
-	socket.emit('newMessage', generateMessage('Admin', 'Welcome to the Chat App'))
-	// socket.on('userJoins', (user) => {
-	// 	console.log(`Welcome to the Chat App ${user.user}`)
-	// 	socket.broadcast.emit('userJoined', {
-	// 		greeting: `${user.user} has joined!`
-	// 	})
-	// })
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
 
-	//socket.broadcast.emit for 'New User Joined'
-	socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User Joined!'))
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
+  socket.on('createMessage', (message, serverNod) => {
+    console.log('createMessage', message);
+    io.emit('newMessage', generateMessage(message.from, message.text));
+    serverNod('This is from the server.');
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // });
+  });
 
-	socket.on('createMessage', (message) => {
-		// console.log('createMessage', message)
-		io.emit('newMessage', generateMessage(message.from, message.text))
-	})
-
-	socket.on('disconnect', () => {
-		console.log('client disconnected')
-	});
-})
+  socket.on('disconnect', () => {
+    console.log('User was disconnected');
+  });
+});
 
 app.get('/', () => {
-	res.sendFile(__dirname + 'index.html');
+    res.sendFile(__dirname + 'index.html');
 })
 
 server.listen(port, () => {
-	console.log(`Check this out on port ${port}!`)
+    console.log(`Check this out on port ${port}!`)
 })

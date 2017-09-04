@@ -1,18 +1,14 @@
 var expect = require('expect');
 
-var { generateMessage } = require('./message')
+var {generateMessage} = require('./message');
 
-describe('Generate Message', () => {
+describe('generateMessage', () => {
+  it('should generate correct message object', () => {
+    var from = 'Jen';
+    var text = 'Some message';
+    var message = generateMessage(from, text);
 
-    it('should generate correct message object', () => {
-        //store res in variable
-        var from = 'jawann';
-        var text = 'hello world';
-
-        var message = generateMessage(from, text)
-
-        expect(message.createdAt).toBeA('number');
-        expect(message).toInclude({ from, text})
-
-    })
-})
+    expect(message.createdAt).toBeA('number');
+    expect(message).toInclude({from, text});
+  });
+});
